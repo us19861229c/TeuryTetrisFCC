@@ -43,5 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
     [width,width+1,width+2,width+3]
   ]
 
-  
+  const pecasTetris = [pEmL, pEmZ, pEmO, pEmT, pEmI]
+
+  let posAtual = 4
+  let rotaAtual = 0
+  //escolher aleatoriamente uma peça de Tetris
+  let randomico = Math.floor(Math.random()*pecasTetris.length)
+  let atual = pecasTetris[randomico][rotaAtual]
+
+  //desenha a peça de Tetris
+  function desenhar() {
+    atual.forEach(index => {
+      squares[posAtual + index].classList.add('pTetris')
+    })
+  }  
+
+  //apagar a peça de Tetris
+  function apagar() {
+    atual.forEach(index => {
+      squares[posAtual + index].classList.remove('pTetris')
+    })
+  }
+
 })
