@@ -58,11 +58,22 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }  
 
-  //apagar a peça de Tetris
+  //apaga a peça de Tetris
   function apagar() {
     atual.forEach(index => {
       squares[posAtual + index].classList.remove('pTetris')
     })
   }
+
+  //faz a peça de Tetris mover-se para baixo a cada segundo 
+  timerId = setInterval(moveParaBaixo, 1000)
+
+    //move a peça para baixo
+    function moveParaBaixo() {
+      apagar()
+      posAtual += width
+      desenhar()
+    }
+
 
 })
