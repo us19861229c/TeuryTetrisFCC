@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const grid = document.querySelector('.grid')
   let squares = Array.from(document.querySelectorAll('.grid div'))
   const width = 10
+  let proximaRandomica = 0
 
   const scoreDisplay = document.querySelectorAll('#score')
   const startButton = document.querySelector('#start-button')
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     [width,width+1,width+2,width+3]
   ]
 
-  const pecasTetris = [pEmL, pEmZ, pEmO, pEmT, pEmI]
+  const pecasTetris = [pEmL, pEmZ, pEmT, pEmO, pEmI]
 
   let posAtual = 4
   let rotacaoAtual = 0
@@ -81,10 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if(atual.some(index => squares[posAtual + index + width].classList.contains('usada'))) {
       atual.forEach(index => squares[posAtual + index].classList.add('usada'))
       //gera uma nova peça randômica
-      randomico = Math.floor(Math.random() * pecasTetris.length)
+      randomico = proximaRandomica
+      proximaRandomica = Math.floor(Math.random() * pecasTetris.length)
       atual = pecasTetris[randomico][rotacaoAtual]
       posAtual = 4
       desenhar()
+      exibePecaTetris()
     }
   }
 
@@ -139,6 +142,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     desenhar()
   }
+// FIXME : Lembrar que existe um erro esquisito quando as peças de tetris rotacionam perto das bordas (esquerda ou direita) - esse erro se revelou desde o último commit 
 
+  //mostra a próxima peça de Tetris no mini-grid (janelinha)
+  const janelinhaQuadrados = document.querySelectorAll('.mini-grid div')
+  const janelinhaLargura = 4
+  let janelinhaIndice = 0
 
+  //as peças de Tetris sem rotação (apenas para serem exibidas na janelinha lateral)
+  const proximasPecas = [
+    [1, janelinhaLargura+1, janelinhaLargura*2+1, 2], //Peça em L
+    [0, janelinhaLargura, janelinhaLargura+1, janelinhaLargura*2+1], //Peça em Z
+    [1, janelinhaLargura, janelinhaLargura+1, janelinhaLargura+2], //Peça em T
+    [0, 1, janelinhaLargura, janelinhaLargura+1], //Peça em O
+    [1, janelinhaLargura+1, janelinhaLargura*2+1, janelinhaLargura*3+1] //Peça em I
+  ]
+
+  //exibe a próxima peça na janelinha
+  function exibePecaTetris() {
+    //remove qualquer rastro da peça de Tetris da grid
+    janelinhaQuadrados.forEach(squares => {
+      squares.classList.remove('pTetris')
+    })
+    proximasPecas[proximaRandomica].forEach( index => {
+      janelinhaQuadrados[janelinhaIndice + index].classList.add('pTetris')
+    })
+  }
+//FIXME: a segunda peça não é revelada na grid, só a partir da terceira. Importante começar o jogo com a sgeunda peça sendo exibida. Outro ponto é centralizar melhor as peças no mini-grid
 })
