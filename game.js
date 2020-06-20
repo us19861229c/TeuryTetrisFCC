@@ -3,11 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let squares = Array.from(document.querySelectorAll('.grid div'))
   const width = 10
   let proximaRandomica = 0
+  let timerId
+  let score = 0
 
-  const scoreDisplay = document.querySelectorAll('#score')
+  const scoreDisplay = document.querySelector('#score')
   const startButton = document.querySelector('#start-button')
 
-// as peças de Tetris
+// as peças de Tetris - TODO: no Tetris64 tem ainda as peças L invertida e Z invertida. Lembrei disso jogando, então essas peças precisam ser acrescentadas depois. 
   //Peça em L
   const pEmL = [
     [1, width+1, width*2+1, 2],
@@ -69,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //faz a peça de Tetris mover-se para baixo a cada segundo 
   timerId = setInterval(moveParaBaixo, 1000)
 
-  //move a peça naturalmente para baixo com o passar do tempo
+  //move a peça naturalmente para baixo com o passar do tempo 
   function moveParaBaixo() {
     apagar()
     posAtual += width
@@ -77,7 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
     pecaPresa()
   }
 
-  //função que prende a peça ao chão
+  //função que prende a peça ao chão ou a outras peças
+  //TODO: no Tetris64 a peça pode - com a agilidade do jogador - ainda mover um pouco para direita ou esquerda ao atingir o solo (pra melhor encaixar em alguma outra peça e não deixar o buraco)
   function pecaPresa(){
     if(atual.some(index => squares[posAtual + index + width].classList.contains('usada'))) {
       atual.forEach(index => squares[posAtual + index].classList.add('usada'))
@@ -88,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
       posAtual = 4
       desenhar()
       exibePecaTetris()
+      adicionaScore()
     }
   }
 
@@ -103,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
       moveParaBaixo()
     }
   }
-  document.addEventListener('keyup', controlaTecladoMovimento)
+  document.addEventListener('keydown', controlaTecladoMovimento)
 
   //rotaciona a peça de Tetris
   function rotacionaAPeca() {
@@ -169,4 +173,37 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 //FIXME: a segunda peça não é revelada na grid, só a partir da terceira. Importante começar o jogo com a sgeunda peça sendo exibida. Outro ponto é centralizar melhor as peças no mini-grid
+
+//ativa a funcionalidade do botão Start e Pause. 
+startButton.addEventListener('click', () => {
+    if(timerId) {
+      clearInterval(timerId)
+      timerId = null
+    }else {
+      desenhar()
+      timerId = setInterval(moveParaBaixo, 1000)
+      proximaRandomica = Math.floor(Math.random() * pecasTetris.length)
+      exibePecaTetris()
+    }
+  }) //FIXME: a peça de Tetris no preview muda toda vez que o jogo é pausado. Ela deve se manter.
+
+  //acrescenta registro de Score e funcionalidade de quebrar linha 
+  //registra score
+  function adicionaScore() {
+    for(let i =0; i < 199; i +=width) {
+      const linha = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9]
+
+      if(linha.every(index => squares[index].classList.contains('usada'))) {
+        score +=10
+        scoreDisplay.innerHTML = score
+        linha.forEach(index => {
+          squares[index].classList.remove('usada')
+          squares[index].classList.remove('pTetris')
+        })
+        const squaresRemoved = squares.splice(i, width)
+        squares = squaresRemoved.concat(squares)
+        squares.forEach( cell => grid.appendChild(cell))
+      }
+    }
+  }
 })
