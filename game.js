@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let proximaRandomica = 0
   let timerId
   let score = 0
+  const cores = [
+    'crimson', 'darkorchid', 'goldenrod', 'dodgerblue', 'forestgreen'
+  ]
 
   const scoreDisplay = document.querySelector('#score')
   const startButton = document.querySelector('#start-button')
@@ -58,6 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function desenhar() {
     atual.forEach(index => {
       squares[posAtual + index].classList.add('pTetris')
+      squares[posAtual + index].style.backgroundColor = cores[randomico]
+
     })
   }
 
@@ -65,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function apagar() {
     atual.forEach(index => {
       squares[posAtual + index].classList.remove('pTetris')
+      squares[posAtual + index].style.backgroundColor = ''
     })
   }
 
@@ -152,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
   //mostra a próxima peça de Tetris no mini-grid (janelinha)
   const janelinhaQuadrados = document.querySelectorAll('.mini-grid div')
   const janelinhaLargura = 4
-  let janelinhaIndice = 0
+  const janelinhaIndice = 0
 
   //as peças de Tetris sem rotação (apenas para serem exibidas na janelinha lateral)
   const proximasPecas = [
@@ -168,9 +174,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //remove qualquer rastro da peça de Tetris da grid
     janelinhaQuadrados.forEach(squares => {
       squares.classList.remove('pTetris')
+      squares.style.backgroundColor =''
     })
     proximasPecas[proximaRandomica].forEach( index => {
       janelinhaQuadrados[janelinhaIndice + index].classList.add('pTetris')
+      janelinhaQuadrados[janelinhaIndice + index].style.backgroundColor = cores[proximaRandomica]
     })
   }
 //FIXME: a segunda peça não é revelada na grid, só a partir da terceira. Importante começar o jogo com a sgeunda peça sendo exibida. Outro ponto é centralizar melhor as peças no mini-grid
@@ -200,6 +208,7 @@ startButton.addEventListener('click', () => {
         linha.forEach(index => {
           squares[index].classList.remove('usada')
           squares[index].classList.remove('pTetris')
+          squares[index].style.backgroundColor = ''
         })
         const squaresRemoved = squares.splice(i, width)
         squares = squaresRemoved.concat(squares)
@@ -216,3 +225,5 @@ startButton.addEventListener('click', () => {
     }
   }
 })
+//FIXME: o Game Over ainda permite o jogador mexer as peças.
+//FIXME: Algumas rotações das peças criam um 'lixo' no meio do jogo.
