@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
       desenhar()
       exibePecaTetris()
       adicionaScore()
+      gameOver()
     }
   }
 
@@ -204,6 +205,14 @@ startButton.addEventListener('click', () => {
         squares = squaresRemoved.concat(squares)
         squares.forEach( cell => grid.appendChild(cell))
       }
+    }
+  }
+
+  //game over!
+  function gameOver() {
+    if(atual.some(index => squares[posAtual + index].classList.contains('usada'))) {
+      scoreDisplay.innerHTML = `Fim de jogo. Seu Score foi ${score}. Atualize para jogar novamente`
+      clearInterval(timerId)
     }
   }
 })
